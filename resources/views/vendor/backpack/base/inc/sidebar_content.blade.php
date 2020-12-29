@@ -2,3 +2,4 @@
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('genre') }}'><i class='nav-icon la la-question'></i> Genres</a></li>
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('manufacturer') }}'><i class='nav-icon la la-question'></i> Manufacturers</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('game') }}'><i class='nav-icon la la-question'></i> Games</a></li>

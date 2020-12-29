@@ -5,7 +5,7 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 
-class Manufacturer extends Model
+class Game extends Model
 {
     use CrudTrait;
 
@@ -15,7 +15,7 @@ class Manufacturer extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'manufacturers';
+    protected $table = 'games';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -34,10 +34,15 @@ class Manufacturer extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function game()
+    public function genres()
     {
-        return $this->hasMany(Game::class,'game_manufacturers','manufacturer_id', 'game_id');
+        return $this->belongsToMany(Genre::class, 'game_genres','game_id', 'genre_id');
     }
+    public function manufacturer()
+    {
+        return $this->belongsTo(Manufacturer::class, 'game_manufacturers','game_id', 'manufacturer_id');
+    }
+    
     /*
     |--------------------------------------------------------------------------
     | SCOPES
