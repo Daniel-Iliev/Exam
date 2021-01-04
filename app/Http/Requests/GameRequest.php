@@ -50,7 +50,7 @@ class GameRequest extends FormRequest
     public function messages()
     {
         return [
-            //
+            
         ];
     }
 }

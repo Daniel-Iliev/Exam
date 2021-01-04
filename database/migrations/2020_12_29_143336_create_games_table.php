@@ -16,6 +16,7 @@ class CreateGamesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('year_released');
+            $table->string('manufacturer');
             $table->timestamps();
         });
     }

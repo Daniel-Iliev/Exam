@@ -25,8 +25,10 @@ class ManufacturerRequest extends FormRequest
      */
     public function rules()
     {
+        $year = date("Y");
         return [
-            // 'name' => 'required|min:5|max:255'
+            'name' => 'required|min:2|max:255|unique:manufacturers',
+            'year_released' => 'required|gt:1900|lt:2021'
         ];
     }
 
@@ -50,7 +52,10 @@ class ManufacturerRequest extends FormRequest
     public function messages()
     {
         return [
-            //
+            'name.required' => 'Please provide valid name which is between 2 and 255 characters.',
+            'year_released.lt' =>'Year released must be less than current year',
+            'year_released.gt' =>'Year released must be after 1900',
+            'name.unique'=>'This manufacturer already exists'
         ];
     }
 }

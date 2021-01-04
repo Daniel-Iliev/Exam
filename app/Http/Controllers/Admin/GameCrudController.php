@@ -42,12 +42,18 @@ class GameCrudController extends CrudController
             ],
             [    
                 'label'     => "Manufacturer",
-                'type'      => ('select'),
+                'type'      => ($show ? "select": 'select2'),
                 'name'      => 'manufacturer',
-                'entity'    => 'manufacturer', 
+                'entity'    => 'manufacturers', 
                 'model'     => "App\Models\Manufacturer",
-                'attribute' => 'name', 
-                'pivot'     => true,
+                'attribute' => 'name'
+            ],
+            [
+                'label' => "Logo",
+                'name' => "image",
+                'type' => 'image',
+                'crop' => true,
+                'aspect_ratio' => 1
             ]
         ];
     }
@@ -71,15 +77,10 @@ class GameCrudController extends CrudController
      * @return void
      */
     protected function setupListOperation()
-    {
-        CRUD::setFromDb(); // columns
-
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
-         */
-    }
+{
+    $this->crud->set('show.setFromDb', false);
+    $this->crud->addColumns($this->getFieldsData(TRUE));
+}
 
     /**
      * Define what happens when the Create operation is loaded.

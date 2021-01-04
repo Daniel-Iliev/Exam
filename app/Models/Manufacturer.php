@@ -34,10 +34,7 @@ class Manufacturer extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function game()
-    {
-        return $this->hasMany(Game::class,'game_manufacturers','manufacturer_id', 'game_id');
-    }
+    
     /*
     |--------------------------------------------------------------------------
     | SCOPES
