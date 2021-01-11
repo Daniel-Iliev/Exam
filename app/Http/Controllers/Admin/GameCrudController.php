@@ -62,6 +62,7 @@ class GameCrudController extends CrudController
      * 
      * @return void
      */
+    
     public function setup()
     {
         CRUD::setModel(\App\Models\Game::class);

@@ -7,13 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Scout\Searchable;
-
 class Game extends Model
 {
     use CrudTrait;
-    use Searchable;
-
     /*
     |--------------------------------------------------------------------------
     | GLOBAL VARIABLES
