@@ -3,7 +3,6 @@
 @section('content')
 
 <form  method="GET" role="search">
-    {{ csrf_field() }}
         <input type="text" name="q"
             placeholder="Search games">
             <button type="submit">Search</button>
