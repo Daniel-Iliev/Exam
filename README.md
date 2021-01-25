@@ -1,62 +1,164 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# PHP Games Project
+### Проектът е създаден чрез помощтта на:
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Composer – Dependency Manager
 
-## About Laravel
+Laravel – PHP Framework
+Backpack for Laravel – Admin Panel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Създаване на проекта
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+При създаването на проекта чрез composer е важно да уточним че искаме да инсталираме и Laravel което става чрез командата 
+~~~bash
+composer create-project --prefer-dist laravel/laravel PROJECTNAME 
+~~~
+където PROJECTNAME е името на проекта. Това автоматично ще добави Laravel и всички нужни за него пакети.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+След това, за да добавим и Backpack Admin Panel към проекта трябва да създадем база данни в phpMyAdmin, чието име да съвпада с името на базата данни към която е описана връзка в .env файла на новосъздадения ни проект. Когато това е готово изпълняваме 4 команди:
+~~~bash
+ composer require backpack/crud
+~~~
+~~~bash
+composer require backpack/generators --dev
+~~~
+~~~bash
+composer require laracasts/generators --dev
+~~~
+и накрая 
+~~~bash
+php artisan backpack:install
+~~~
+Админ панелът вече е създаден и можем да се регистрираме в него.
 
-## Learning Laravel
+Следваща стъпка е да създадем обектите в базата данни, с които ще работим. Първо си създаваме миграция с командата php artisan make:migration create_NAME_table където NAME е името с което искаме да създадем таблицата. Всяка миграция има 2 основни метода: Up и Down.
+Up метода е отговорен за създаването на таблицата, а Down за изтриването и. Първоначално таблицата има 3 колони: Id, Created_At и Updated_At. Можем да променим това в метода като за всяка допълнителна колона добавим нов ред от типа
+~~~php
+ $table->TYPE(‘NAME’);
+ ~~~
+където е TYPE тъипът, а NAME – името. По този начин създаваме по една миграция за всеки от обектите, в нашия случай:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Жанрове – с допълнителна колона за име на жанра,
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Производители – с допълнителни колони за име на производителя и година на създаване,
 
-## Laravel Sponsors
+Игри – с допълнителни колони за име, година, производител и снимка,
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Междинна таблица за игри и жанрове – с допълнителни колони за id на жанр и id на игра.
 
-### Premium Partners
+За да изпълним миграциите и те да създадат обектите в базата данни е нужно да изпълним командата php artisan migrate . Базата данни е готова.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+След като създадем таблиците е време да създадем и CRUD за всеки от обектите. Това става с командата 
+~~~bash 
+php artisan backpack:crud NAME 
+~~~  
+където NAME е името на таблицата в единствено число. Backpack автоматично създава controller, model, request и route вързани с дадения обект от базата данни. Правим това за всички таблици, освен междинната.
+Сега е време да опишем и връзките между обектите ни. В нашия случай връзките са:
 
-## Contributing
+Игра – Жанр : Много към много с междинна таблица,
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Игра – Производител : Едно към много.
+За да се получи това, в модела, създаден ни към таблица Игри добавяме две нови функции – по една за всяка връзка. 
+Функцията за връзка Много към Много трябва да връща 
+~~~php
+$this->belongsToMany(CLASS::class, ‘PIVOT’ ,'OWN', 'FOREIGN');
+~~~
+където CLASS е името на модела към когото искаме да свържем конкретния модел, PIVOT е името на междинната таблица, OWN е името на колоната отговаряща на ключа на конкретния модел, а FOREIGN е името на колоната отговаряща на ключа на модела към когото искаме да свържем конкретния модел.
+Функцията за връзка Едно към Много трябва да връща 
+~~~php
+$this->belongsTo(CLASS::class,'FOREIGN','OWN');
+~~~
+където CLASS е името на модела към когото искаме да свържем конкретния модел, FOREIGN е името на колоната в конкретния модел, отговаряща на ключа на модела към когото искаме да свържем конкретния модел, а OWN е името на колоната отговаряща на ключа на модела с когото искаме да свържем.
 
-## Code of Conduct
+Връзките са готови, но за да можем да избираме жанрове и производители от вече добавените записи в таблиците при създаване на обекти в админ панела трябва да добавим метода getFieldsData в crud контролера на Игрите. Този метод позволява ръчно да настроим кои стойности как да бъдат вземани от моделите и представяни при създаване на нов обект. В нашият случай за да добавим полета жанр добавяме : 
+~~~php
+     'label'     => "Genres",
+                'type'      => ($show ? "select": 'select2_multiple'),
+                'name'      => 'genres',
+                'entity'    => 'genres', 
+                'model'     => "App\Models\Genre",
+                'attribute' => 'name', 
+                'pivot'     => true,
+~~~
+където label е какво ще изписва над полето за попълване, type е начинът по който ще се добавя информацията (текст, дропдаун меню и т.н.), name е името на таблицата, от която ще идват възможностите, entity е името на метода, описващ връзката между моделите, model е моделът на външната таблица, attribute e колоната от външната таблица, чиито стойности ще се показват за избор и pivot е дали връзката използва междинна таблица.
+Същото правим за производител, като обаче там типът не е select2_multiple, а е само select2. Тук трябва да добавим информация и за добавянето на снимки. Това става по същия начин:
+~~~php
+     'label' => "Logo",
+                'name' => "image",
+                'type' => 'image',
+                'crop' => true,
+                'aspect_ratio' => 1
+~~~
+където crop е дали да имаме възможност за изрязване на снимката след качване и ако да чрез aspect_ratio обозначаваме съотношението на изрязване. За да укажем на приложението да използва нашите настройки трябва и да променим setupListOperations метода на:
+~~~php
+protected function setupListOperation()
+{
+$this->crud->set('show.setFromDb', false);
+$this->crud->addColumns($this->getFieldsData(TRUE));
+} 
+~~~
+Това премахва автоматичното генериране от базата данни и включва създаденото от нас.
+За да можем да запазваме и качваме снимки трябва да добавим още 2 функции в контролерът на игрите. Първата е:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+~~~php
+public static function boot()
+{
+parent::boot();
+static::deleting(function($obj) {
+Storage::delete(Str::replaceFirst('storage/','public/', $obj->image));
+~~~
+При изтриване на запис от базата тя изтрива и снимката от файловете.
+Втората функция е:
+~~~php
+public function setImageAttribute($value)
+    {
+        $attribute_name = "image";
+        $destination_path = "public/games";
+        if ($value==null) {
+            Storage::delete($this->{$attribute_name});
+            $this->attributes[$attribute_name] = null;
+        }
+        if (Str::startsWith($value, 'data:image'))
+        {
+            $image = Image::make($value)->encode('jpg', 90); 
+            $filename = md5($value.time()).'.jpg'; 
+            Storage::put($destination_path.'/'.$filename, $image->stream());
+            Storage::delete(Str::replaceFirst('storage/','public/', $this->{$attribute_name}));
+            $public_destination_path = Str::replaceFirst('public/', 'storage/', $destination_path);
+            $this->attributes[$attribute_name] = $public_destination_path.'/'.$filename;
+        }
+~~~
+Тя декодира снимката от базата данни и я запазва във временна директория.
+	Следващата стъпка е да си създадем view. Можем да използваме тема по избор. Вътре добавяме:
+~~~html
+<form  method="GET" role="search">
+        <input type="text" name="q" placeholder="Search games">
+            <button type="submit">Search</button>
+</form>
+~~~
+Този формуляр ще изпозваме за създаване на функционалност на търсене.
+Чрез командата php artisan make:controller IndexController създаваме нов контролер. В него добавяме функцията: 
+~~~php
+public function index() {
+            $q = Input::get ( 'q' );
+            if ($q){
+ $game = Game::where ( 'name', 'LIKE', '%' . $q . '%' )->orWhere ( 'manufacturer', 'LIKE', '%' . $q . '%' )->orWhere ( 'year_released', 'LIKE', '%' . $q . '%' )
+            ->orderBy('created_at','desc')->get ();
+            if (count ( $game ) > 0)
+                return view ( 'index.index' )->withDetails ( $game )->withQuery ( $q );
+            else
+ return view ( 'index.index' )->withMessage ( 'No Details found. Try to search again !' );
+               }
+               $games  = Game::orderBy('created_at','desc')->get();
+               return view('index.index', ['games' => $games]);
+               } 
+~~~
+която при наличие на стойност във формуляра връща записите от таблица игри, отговарящи на тази стойност,  а при липса на стойност във формуляра връща всички записи от таблицата с игри.
+Последно остава да добавим в routes/web.php:
+~~~php
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Route::get('/',[IndexController::class,'index']);
+което при зареждане на началната страница ще извиква новосъздаденият контролер.
+~~~
 
 ## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[MIT license](https://opensource.org/licenses/MIT).

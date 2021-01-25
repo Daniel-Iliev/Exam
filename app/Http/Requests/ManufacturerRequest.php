@@ -25,7 +25,6 @@ class ManufacturerRequest extends FormRequest
      */
     public function rules()
     {
-        $year = date("Y");
         return [
             'name' => 'required|unique:manufacturers',
             'year_released' => 'required|gt:1900|lt:2021'
