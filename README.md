@@ -2,7 +2,7 @@
 ## Инструкции за инсталация
 Първоначално е нужно да имате .env файл. В проекта е включен .env.example - копирате го и го преименувате на само .env а в него променяте стойността на APP_KEY на "base64:wyJUmqsU2+4V/h7TmuukulbvdpW6xQBrXxuhDDNAxTI=" (без кавичките). Стойността на DB_DATABASE трябва да отговаря на името на празна таблица във вашият phpMyAdmin. След това е нужно да инсталирате composer към проекта. Това става като изпълните командата
 ~~~bash
-composer create-project --prefer-dist laravel/laravel PROJECTNAME 
+composer install
 ~~~
 в директорията на проекта.
 
