@@ -26,7 +26,7 @@ class GameRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:games',
+            'name' => 'required',
             'year_released' => 'required|gt:1900|lt:2021',
             'manufacturer' => 'required'
         ];
